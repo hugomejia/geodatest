@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Geoda</string>
+    <string name="action_settings">Paramètres</string>
+    <string name="add_geofences">Ajouter geofences</string>
+    <string name="body_exit">Etes-vous sûr de vouloir quitter?</string>
+    <string name="body_go_back">Êtes-vous sûr que vous voulez revenir?</string>
+    <string name="download_complete">Téléchargement complet</string>
+    <string name="downloading_publicity">Publicité Downloading…</string>
+    <string name="geofence_not_available">Le service de geofence ne sont pas disponibles maintenant</string>
+    <string name="geofence_too_many_geofences">Son application a enregistré trop geofences</string>
+    <string name="geofence_too_many_pending_intents">Vous avez fourni aussi PendingIntents addGeofences l appel()</string>
+    <string name="geofence_transition_entered">Entrée</string>
+    <string name="geofence_transition_exited">Sorti</string>
+    <string name="geofence_transition_notification_text">Cliquez sur la notification pour revenir à l application</string>
+    <string name="geofence_transition_invalid_type">Geofence erreur de transition : invalide type de transition %1$d</string>
+    <string name="geofences_added">Geofences ajoutés</string>
+    <string name="geofences_removed">geofences enlevés</string>
+    <string name="geofences_transitions">Geofences Transition:</string>
+    <string name="gps_signal_error">GPS introuvable</string>
+    <string name="last_update_time_label">Dernier lieu du temps de mise à jour:</string>
+    <string name="latitude_label">Latitude:</string>
+    <string name="loading">Chargement en cours, S il vous plaît patienter…</string>
+    <string name="location_updated_message">Situation mise à jour</string>
+    <string name="longitude_label">Longitude:</string>
+    <string name="not_connected">GoogleApiClient pas encore connecté. Essaye encore.</string>
+    <string name="remove_geofences">Retirer geofences</string>
+    <string name="start_updates">Lancer mises à jour</string>
+    <string name="stop_updates">Arrêtez les mises à jour</string>
+    <string name="title_activity_main">Principal</string>
+    <string name="title_activity_maps">Carte</string>
+    <string name="title_activity_publicity">Publicité</string>
+    <string name="tittle_exit">Sortie</string>
+    <string name="tittle_go_back">Retourner</string>
+    <string name="unknown_geofence_error">Erreur inconnue: le service de Geofence ne sont pas disponibles maintenant</string>
+    <string name="unknown_geofence_transition">Transition Inconnu</string>
+    <string name="welcome_to">Bienvenue A</string>
+</resources>

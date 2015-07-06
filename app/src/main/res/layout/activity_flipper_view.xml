@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+     Copyright (C) 2014 Google, Inc.
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/llMain"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:keepScreenOn="true"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/rlMap"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context="com.arrg.android.app.geoda.FlipperViewActivity" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rlViewFlipper"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <ViewFlipper
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/viewFlipper"
+            android:flipInterval="5000"
+            android:inAnimation="@android:anim/fade_in"
+            android:outAnimation="@android:anim/fade_out"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rlText"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:padding="@dimen/layout_padding">
+
+        <TextView
+            android:id="@+id/latitude_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/ui_group_top_margin"
+            android:text="@string/latitude_label"
+            android:textSize="@dimen/default_text_size" />
+
+        <TextView
+            android:id="@+id/latitude_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/default_text_size"
+            android:layout_marginStart="@dimen/activity_vertical_margin"
+            android:layout_marginLeft="@dimen/activity_vertical_margin"
+            android:layout_alignTop="@+id/latitude_label"
+            android:layout_toRightOf="@+id/latitude_label"
+            android:layout_toEndOf="@+id/latitude_label" />
+
+        <TextView
+            android:id="@+id/longitude_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/latitude_label"
+            android:text="@string/longitude_label"
+            android:textSize="@dimen/default_text_size" />
+
+        <TextView
+            android:id="@+id/longitude_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/default_text_size"
+            android:layout_marginStart="@dimen/activity_vertical_margin"
+            android:layout_marginLeft="@dimen/activity_vertical_margin"
+            android:layout_below="@+id/latitude_text"
+            android:layout_toRightOf="@+id/longitude_label"
+            android:layout_toEndOf="@+id/longitude_label" />
+
+        <TextView
+            android:id="@+id/last_update_time_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/longitude_label"
+            android:text="@string/last_update_time_label"
+            android:textSize="@dimen/default_text_size" />
+
+        <TextView
+            android:id="@+id/last_update_time_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/default_text_size"
+            android:layout_marginStart="@dimen/activity_vertical_margin"
+            android:layout_marginLeft="@dimen/activity_vertical_margin"
+            android:layout_above="@+id/tvGeofenceTransitionText"
+            android:layout_toRightOf="@+id/last_update_time_label"
+            android:layout_toEndOf="@+id/last_update_time_label" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/geofences_transitions"
+            android:id="@+id/tvGeofenceTransition"
+            android:layout_below="@+id/last_update_time_label"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:id="@+id/tvGeofenceTransitionText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/default_text_size"
+            android:layout_marginStart="@dimen/activity_vertical_margin"
+            android:layout_marginLeft="@dimen/activity_vertical_margin"
+            android:layout_below="@+id/last_update_time_label"
+            android:layout_toRightOf="@+id/tvGeofenceTransition"
+            android:layout_toEndOf="@+id/tvGeofenceTransition" />
+    </RelativeLayout>
+</LinearLayout>
+
