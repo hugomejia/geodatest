@@ -18,7 +18,7 @@
     <string name="geofences_removed">Geofences removidos</string>
     <string name="geofences_transitions">Geofences transición:</string>
     <string name="gps_signal_error">GPS no encontrado</string>
-    <string name="last_update_time_label">Ultima vez que se actualizó la ubicación:</string>
+    <string name="last_update_time_label">Ultima actualización de la ubicación:</string>
     <string name="latitude_label">Latitud:</string>
     <string name="loading">Cargando, por favor espere…</string>
     <string name="location_updated_message">Ubicación actualizada</string>
