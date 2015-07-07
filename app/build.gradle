@@ -8,8 +8,8 @@ android {
         applicationId "com.arrg.android.app.geoda"
         minSdkVersion 14
         targetSdkVersion 22
-        versionCode 1
-        versionName "2.5.5"
+        versionCode 0
+        versionName "2.5.6"
     }
     buildTypes {
         release {

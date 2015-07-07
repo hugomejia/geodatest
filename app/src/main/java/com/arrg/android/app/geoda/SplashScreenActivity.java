@@ -134,19 +134,12 @@ public class SplashScreenActivity extends AppCompatActivity {
             edit.apply();
             startDownload();
         } else {
-            tvLoading.setVisibility(View.GONE);
-            ivLogo.setVisibility(View.GONE);
-
-            Timer t = new Timer();
-
-            t.schedule(new TimerTask() {
-                public void run(){
-                    Intent i = new Intent(SplashScreenActivity.this, FlipperViewActivity.class);
-                    startActivity(i);
-                    overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
-                    finish();
-                }
-            },2500);
+            DownloadPublicity downloadPublicity = new DownloadPublicity(SplashScreenActivity.this, tvLoading);
+            try {
+                downloadPublicity.downloadFiles();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

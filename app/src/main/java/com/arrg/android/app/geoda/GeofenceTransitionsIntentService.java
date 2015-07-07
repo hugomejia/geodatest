@@ -1,19 +1,3 @@
-/**
- * Copyright 2014 Google Inc. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.arrg.android.app.geoda;
 
 import android.app.IntentService;
@@ -29,21 +13,15 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
 
-
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingEvent;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Listener for geofence transition changes.
- *
- * Receives geofence transition events from Location Services in the form of an Intent containing
- * the transition type and geofence id(s) that triggered the transition. Creates a notification
- * as the output.
- */
 public class GeofenceTransitionsIntentService extends IntentService {
+
+    private String idOfGeofence = "None";
 
     protected static final String TAG = "g-transitions-service";
 
@@ -91,7 +69,7 @@ public class GeofenceTransitionsIntentService extends IntentService {
 
             Intent i = new Intent("t");
             i.putExtra("i", getString(R.string.geofence_transition_entered));
-            i.putExtra("t", geofenceTransitionDetails);
+            i.putExtra("t", idOfGeofence);
             LocalBroadcastManager.getInstance(this).sendBroadcast(i);
         } else if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT) {
             List<Geofence> triggeringGeofences = geofencingEvent.getTriggeringGeofences();
@@ -101,11 +79,6 @@ public class GeofenceTransitionsIntentService extends IntentService {
 
             // Send notification and log the transition details.
             sendNotification(geofenceTransitionDetails);
-
-            Intent i = new Intent("t");
-            i.putExtra("i", getString(R.string.geofence_transition_exited));
-            i.putExtra("t", geofenceTransitionDetails);
-            LocalBroadcastManager.getInstance(this).sendBroadcast(i);
         } else {
             // Log the error.
             Log.e(TAG, getString(R.string.geofence_transition_invalid_type, geofenceTransition));
@@ -131,7 +104,7 @@ public class GeofenceTransitionsIntentService extends IntentService {
         }
         String triggeringGeofencesIdsString = TextUtils.join(", ",  triggeringGeofencesIdsList);
 
-        Constants.GEOFENCE_ID = triggeringGeofencesIdsString;
+        idOfGeofence = triggeringGeofencesIdsString;
 
         return geofenceTransitionString + ": " + triggeringGeofencesIdsString;
     }

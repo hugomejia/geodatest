@@ -57,4 +57,5 @@
 
     <string name="welcome_to">Welcome To</string>
     <string name="ic_launcher">Loading…</string>
+    <string name="images_added_label">Publicity added:</string>
 </resources>

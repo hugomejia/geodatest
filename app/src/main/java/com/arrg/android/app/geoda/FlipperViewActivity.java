@@ -18,13 +18,13 @@ import android.provider.Settings;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.JsonReader;
 import android.util.JsonToken;
 import android.util.Log;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -82,24 +82,42 @@ public class FlipperViewActivity extends AppCompatActivity implements Connection
     protected ArrayList<CircleOptions> mCircleOptions;
     protected ArrayList<Geofence> mGeofenceList;
     protected ArrayList<Integer> listOfVideos = new ArrayList<>();
+    protected ArrayList<String> listOfId = new ArrayList<>();
+    protected ArrayList<String> listOfPublicity = new ArrayList<>();
 
-    protected TextView mLastUpdateTimeTextView;
-    protected TextView mLatitudeTextView;
-    protected TextView mLongitudeTextView;
-    protected TextView mGeofencesTransition;
+    protected int noOfVideo;
+
+    protected SupportMapFragment mMapFragment;
+    protected TextView textView;
     protected ViewFlipper flipper;
 
     protected BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String typeOfTransition = intent.getStringExtra("i");
-            String transitionDetails = intent.getStringExtra("t");
+            String idOfGeofence = intent.getStringExtra("t");
 
             if (typeOfTransition.equals(getString(R.string.geofence_transition_entered))) {
-                mGeofencesTransition.setText(transitionDetails);
-                showPublicityInFlipperView();
-            } else if (typeOfTransition.equals(getString(R.string.geofence_transition_exited))) {
-                flipper.removeAllViews();
+                Toast.makeText(FlipperViewActivity.this, getResources().getString(R.string.geofence_transition_entered) + " " + idOfGeofence, Toast.LENGTH_SHORT).show();
+
+                if (idOfGeofence.contains(",")) {
+                    String idGeofences[] = idOfGeofence.split(",");
+                    for (String id : idGeofences) {
+                        if (!listOfId.contains(id.trim())) {
+                            listOfId.add(id.trim());
+                            addPublicityInFlipperView(id.trim());
+                        }
+                        Log.d(TAG, "Values of ID added: " + listOfId.toString());
+                    }
+                } else {
+                    if (!listOfId.contains(idOfGeofence)) {
+                        listOfId.add(idOfGeofence);
+                        addPublicityInFlipperView(idOfGeofence);
+                    }
+                    Log.d(TAG, "Values of ID added: " + listOfId.toString());
+                }
+                String filesAdded = TextUtils.join("\n", listOfPublicity);
+                textView.setText(filesAdded);
             }
         }
     };
@@ -113,6 +131,7 @@ public class FlipperViewActivity extends AppCompatActivity implements Connection
         setContentView(R.layout.activity_flipper_view);
 
         viewManager();
+        showPublicityInFlipperView();
         settingsManager();
         updateValuesFromBundle(savedInstanceState);
         try {
@@ -194,8 +213,7 @@ public class FlipperViewActivity extends AppCompatActivity implements Connection
         mCurrentLocation = location;
         mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
         updateUI();
-        /*Toast.makeText(this, getResources().getString(R.string.location_updated_message),
-                Toast.LENGTH_SHORT).show();*/
+        /*Toast.makeText(this, getResources().getString(R.string.location_updated_message), Toast.LENGTH_SHORT).show();*/
     }
 
     @Override
@@ -209,15 +227,11 @@ public class FlipperViewActivity extends AppCompatActivity implements Connection
     }
 
     public void viewManager() {
-        mLatitudeTextView = (TextView) findViewById(R.id.latitude_text);
-        mLongitudeTextView = (TextView) findViewById(R.id.longitude_text);
-        mLastUpdateTimeTextView = (TextView) findViewById(R.id.last_update_time_text);
-        mGeofencesTransition = (TextView) findViewById(R.id.tvGeofenceTransitionText);
-
-        SupportMapFragment mMapFragment = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map));
+        mMapFragment = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map));
         mMap = mMapFragment.getMap();
 
         flipper = (ViewFlipper) findViewById(R.id.viewFlipper);
+        textView = (TextView) findViewById(R.id.tvImagesAddedText);
 
         mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
         mMap.setMyLocationEnabled(true);
@@ -289,10 +303,6 @@ public class FlipperViewActivity extends AppCompatActivity implements Connection
 
     public void updateUI() {
         if (mCurrentLocation != null) {
-            mLatitudeTextView.setText(String.valueOf(mCurrentLocation.getLatitude()));
-            mLongitudeTextView.setText(String.valueOf(mCurrentLocation.getLongitude()));
-            mLastUpdateTimeTextView.setText(mLastUpdateTime);
-
             LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver, new IntentFilter("t"));
 
             double latitude = mCurrentLocation.getLatitude();
@@ -414,35 +424,37 @@ public class FlipperViewActivity extends AppCompatActivity implements Connection
         super.onSaveInstanceState(savedInstanceState);
     }
 
-    public void showPublicityInFlipperView() {
-        int noOfVideo = 0;
+    public void addPublicityInFlipperView(String idOfGeofence) {
+        File imagesPath = new File(Constants.APP_DATA_SDCARD + "/" + idOfGeofence);
 
-        String idGeofences[] = Constants.GEOFENCE_ID.split(",");
-
-        for (String idGeofence : idGeofences) {
-
-            File imagesPath = new File(Constants.APP_DATA_SDCARD + "/" + idGeofence.trim());
-
+        if (imagesPath.exists()) {
             int imageCount = imagesPath.listFiles().length;
 
             for (int count = 0; count < imageCount; count++) {
                 ImageView imageView = new ImageView(this);
                 VideoView videoView = new VideoView(this);
 
-                imageView.setLayoutParams(findViewById(R.id.rlViewFlipper).getLayoutParams());
+                imageView.setLayoutParams(findViewById(R.id.llMain).getLayoutParams());
                 imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-
-                videoView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+                videoView.setLayoutParams(findViewById(R.id.llMain).getLayoutParams());
 
                 if (imagesPath.listFiles()[count].getAbsolutePath().contains(".jpg")) {
-
                     Bitmap bmp = BitmapFactory.decodeFile(imagesPath.listFiles()[count].getAbsolutePath());
                     imageView.setImageBitmap(bmp);
+
+                    Log.d(TAG, "Added File " + imagesPath.listFiles()[count].getName());
+
+                    listOfPublicity.add(imagesPath.listFiles()[count].getName());
+
                     flipper.addView(imageView);
                 } else if (imagesPath.listFiles()[count].getAbsolutePath().contains(".mp4")) {
                     videoView.setVideoPath(imagesPath.listFiles()[count].getAbsolutePath());
                     videoView.requestFocus();
                     videoView.setKeepScreenOn(true);
+
+                    Log.d(TAG, "Added File " + imagesPath.listFiles()[count].getName());
+
+                    listOfPublicity.add(imagesPath.listFiles()[count].getName());
 
                     flipper.addView(videoView);
                     listOfVideos.add(noOfVideo);
@@ -450,13 +462,50 @@ public class FlipperViewActivity extends AppCompatActivity implements Connection
                 noOfVideo++;
             }
         }
+    }
 
+    public void showPublicityInFlipperView() {
+        noOfVideo = 0;
+
+        File imagesPath = new File(Constants.APP_DATA_SDCARD + "/Publicity");
+        int imageCount = imagesPath.listFiles().length;
+
+        for (int count = 0; count < imageCount; count++) {
+            ImageView imageView = new ImageView(this);
+            VideoView videoView = new VideoView(this);
+
+            imageView.setLayoutParams(findViewById(R.id.llMain).getLayoutParams());
+            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+            videoView.setLayoutParams(findViewById(R.id.llMain).getLayoutParams());
+
+            if (imagesPath.listFiles()[count].getAbsolutePath().contains(".jpg")) {
+                Bitmap bmp = BitmapFactory.decodeFile(imagesPath.listFiles()[count].getAbsolutePath());
+                imageView.setImageBitmap(bmp);
+
+                Log.d(TAG, "Added File " + imagesPath.listFiles()[count].getName());
+
+                listOfPublicity.add(imagesPath.listFiles()[count].getName());
+
+                flipper.addView(imageView);
+            } else if (imagesPath.listFiles()[count].getAbsolutePath().contains(".mp4")) {
+                videoView.setVideoPath(imagesPath.listFiles()[count].getAbsolutePath());
+                videoView.requestFocus();
+                videoView.setKeepScreenOn(true);
+
+                Log.d(TAG, "Added File " + imagesPath.listFiles()[count].getName());
+
+                listOfPublicity.add(imagesPath.listFiles()[count].getName());
+
+                flipper.addView(videoView);
+                listOfVideos.add(noOfVideo);
+            }
+            noOfVideo++;
+        }
         flipper.startFlipping();
-
         reproduceVideoWhileFlipping();
     }
 
-    public void reproduceVideoWhileFlipping(){
+    public void reproduceVideoWhileFlipping() {
         if (listOfVideos.contains(flipper.getDisplayedChild())) {
             ((VideoView) flipper.getCurrentView()).start();
 
@@ -467,10 +516,8 @@ public class FlipperViewActivity extends AppCompatActivity implements Connection
                 }
             });
         }
-
         Animation.AnimationListener mAnimationListener = new Animation.AnimationListener() {
             public void onAnimationStart(Animation animation) {
-
                 if (listOfVideos.contains(flipper.getDisplayedChild())) {
 
                     ((VideoView) flipper.getCurrentView()).start();
@@ -485,14 +532,11 @@ public class FlipperViewActivity extends AppCompatActivity implements Connection
             }
 
             public void onAnimationRepeat(Animation animation) {
-
             }
 
             public void onAnimationEnd(Animation animation) {
-
             }
         };
-
         flipper.getInAnimation().setAnimationListener(mAnimationListener);
     }
 

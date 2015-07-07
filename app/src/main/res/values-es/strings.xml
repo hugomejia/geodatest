@@ -35,4 +35,6 @@
     <string name="title_activity_maps">Mapas</string>
     <string name="title_activity_publicity">Publicidad</string>
     <string name="title_activity_main">Principal</string>
+    <string name="ic_launcher">Cargando…</string>
+    <string name="images_added_label">Publicidad agregada:</string>
 </resources>
