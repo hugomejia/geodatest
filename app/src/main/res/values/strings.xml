@@ -58,4 +58,8 @@
     <string name="welcome_to">Welcome To</string>
     <string name="ic_launcher">Loading…</string>
     <string name="images_added_label">Publicity added:</string>
+    <string name="title_activity_load_data">LoadDataActivity</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_flipper_view_demo">FlipperViewDemoActivity</string>
 </resources>

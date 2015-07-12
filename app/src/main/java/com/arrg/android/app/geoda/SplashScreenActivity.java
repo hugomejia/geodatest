@@ -2,15 +2,15 @@ package com.arrg.android.app.geoda;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.format.Time;
+import android.util.JsonReader;
+import android.util.JsonToken;
 import android.util.Log;
-import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -18,14 +18,15 @@ import android.widget.TextView;
 
 import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class SplashScreenActivity extends AppCompatActivity {
 
@@ -34,8 +35,9 @@ public class SplashScreenActivity extends AppCompatActivity {
     private TextView tvLoading;
     private TextView tvWelcomeTo;
 
+    private SharedPreferences preferences;
     private final String TAG = "LifeCycleEventsSCA";
-    private final String URLJson[] = {"https://www.dropbox.com/s/gzxn2w6icjw8lli/GeofenceData.json?dl=1", Constants.APP_DATA_SDCARD, "GeofenceData.json", "https://www.dropbox.com/s/q8928mix9d9rn3d/PublicityData.json?dl=1", Constants.APP_DATA_SDCARD, "PublicityData.json"};
+    private final String URLJson[] = {"https://www.dropbox.com/s/wjfj6wheq0fhg70/TypeOfApp.json?dl=1", Constants.APP_DATA_SDCARD, "TypeOfApp.json"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,7 +117,7 @@ public class SplashScreenActivity extends AppCompatActivity {
     }
 
     public void loadManager() {
-        SharedPreferences preferences = getSharedPreferences(Constants.PACKAGE_NAME + ".STARTUP_SETTINGS_PREFERENCES", Context.MODE_PRIVATE);
+        preferences = getSharedPreferences(Constants.PACKAGE_NAME + ".STARTUP_SETTINGS_PREFERENCES", Context.MODE_PRIVATE);
         SharedPreferences.Editor edit = preferences.edit();
 
         Time systemDate = new Time(Time.getCurrentTimezone());
@@ -134,9 +136,11 @@ public class SplashScreenActivity extends AppCompatActivity {
             edit.apply();
             startDownload();
         } else {
-            DownloadPublicity downloadPublicity = new DownloadPublicity(SplashScreenActivity.this, tvLoading);
+
+            InputStream in;
             try {
-                downloadPublicity.downloadFiles();
+                in = new FileInputStream(Constants.APP_DATA_SDCARD + "/TypeOfApp.json");
+                readJSon(in);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -176,6 +180,39 @@ public class SplashScreenActivity extends AppCompatActivity {
         new DownloadJSonFile().execute(URLJson);
     }
 
+    public void readJSon(InputStream in) throws IOException {
+        JsonReader reader = new JsonReader(new InputStreamReader(in, "UTF-8"));
+
+        String type = null;
+        String publicityData = null;
+        String geofenceData = null;
+
+        reader.beginObject();
+        while (reader.hasNext()) {
+            String name = reader.nextName();
+            final boolean isNull = reader.peek() == JsonToken.NULL;
+
+            if (name.equals("type") && !isNull) {
+                type = reader.nextString();
+            } else if (name.equals("publicityData.json") && !isNull) {
+                publicityData = reader.nextString();
+            } else if (name.equals("geofenceData.json") && !isNull) {
+                geofenceData = reader.nextString();
+            } else {
+                reader.skipValue();
+            }
+        }
+        reader.endObject();
+
+        SharedPreferences.Editor edit = preferences.edit();
+        edit.putString("type_of_app", type);
+        edit.apply();
+
+        String url[] = {publicityData, "PublicityData.json", geofenceData, "GeofenceData.json"};
+
+        new DownloadJSonFiles(SplashScreenActivity.this, tvLoading).execute(url);
+    }
+
     class DownloadJSonFile extends AsyncTask<String, String, String> {
 
         @Override
@@ -185,38 +222,38 @@ public class SplashScreenActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... params) {
-            for (int i = 0; i < params.length; i += 3) {
-                int count;
 
-                try {
-                    URL url = new URL(params[i]);
-                    URLConnection connection = url.openConnection();
-                    connection.connect();
+            int count;
 
-                    int lengthOfFile = connection.getContentLength();
+            try {
+                URL url = new URL(params[0]);
+                URLConnection connection = url.openConnection();
+                connection.connect();
 
-                    InputStream input = new BufferedInputStream(url.openStream(), 8192);
+                int lengthOfFile = connection.getContentLength();
 
-                    OutputStream output = new FileOutputStream(URLJson[i + 1] + "/" + URLJson[i + 2]);
+                InputStream input = new BufferedInputStream(url.openStream(), 8192);
 
-                    byte data[] = new byte[1024];
+                OutputStream output = new FileOutputStream(params[1] + "/" + params[2]);
 
-                    long total = 0;
+                byte data[] = new byte[1024];
 
-                    while ((count = input.read(data)) != -1) {
-                        total += count;
-                        publishProgress("" + (int) ((total * 100) / lengthOfFile));
-                        output.write(data, 0, count);
-                    }
+                long total = 0;
 
-                    output.flush();
-                    output.close();
-                    input.close();
-
-                } catch (Exception e) {
-                    Log.e("Error: ", e.getMessage());
+                while ((count = input.read(data)) != -1) {
+                    total += count;
+                    publishProgress("" + (int) ((total * 100) / lengthOfFile));
+                    output.write(data, 0, count);
                 }
+
+                output.flush();
+                output.close();
+                input.close();
+
+            } catch (Exception e) {
+                Log.e("Error: ", e.getMessage());
             }
+
             return null;
         }
 
@@ -229,9 +266,10 @@ public class SplashScreenActivity extends AppCompatActivity {
         protected void onPostExecute(String params) {
             super.onPostExecute(params);
 
-            DownloadPublicity downloadPublicity = new DownloadPublicity(SplashScreenActivity.this, tvLoading);
+            InputStream in;
             try {
-                downloadPublicity.downloadFiles();
+                in = new FileInputStream(Constants.APP_DATA_SDCARD + "/TypeOfApp.json");
+                readJSon(in);
             } catch (IOException e) {
                 e.printStackTrace();
             }

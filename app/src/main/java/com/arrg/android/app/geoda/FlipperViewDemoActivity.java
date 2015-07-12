@@ -13,25 +13,27 @@ import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.media.MediaPlayer;
-import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.JsonReader;
 import android.util.JsonToken;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 import android.widget.ViewFlipper;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
-import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.Geofence;
@@ -39,6 +41,9 @@ import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -51,7 +56,9 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class FlipperViewActivity extends AppCompatActivity implements ConnectionCallbacks, OnConnectionFailedListener, ResultCallback<Status>, LocationListener {
+public class FlipperViewDemoActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ResultCallback<Status>, LocationListener {
+
+    protected GoogleMap mMap;
 
     protected static final String tag = "LifeCycleEventsMA";
     protected static final String TAG = "c-and-m-geofences";
@@ -79,6 +86,9 @@ public class FlipperViewActivity extends AppCompatActivity implements Connection
     protected ArrayList<String> listOfPublicity = new ArrayList<>();
 
     protected int noOfVideo;
+
+    protected SupportMapFragment mMapFragment;
+    protected TextView textView;
     protected ViewFlipper flipper;
 
     protected BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -88,7 +98,7 @@ public class FlipperViewActivity extends AppCompatActivity implements Connection
             String idOfGeofence = intent.getStringExtra("t");
 
             if (typeOfTransition.equals(getString(R.string.geofence_transition_entered))) {
-                Toast.makeText(FlipperViewActivity.this, getResources().getString(R.string.geofence_transition_entered) + " " + idOfGeofence, Toast.LENGTH_SHORT).show();
+                Toast.makeText(FlipperViewDemoActivity.this, getResources().getString(R.string.geofence_transition_entered) + " " + idOfGeofence, Toast.LENGTH_SHORT).show();
 
                 if (idOfGeofence.contains(",")) {
                     String idGeofences[] = idOfGeofence.split(",");
@@ -106,6 +116,8 @@ public class FlipperViewActivity extends AppCompatActivity implements Connection
                     }
                     Log.d(TAG, "Values of ID added: " + listOfId.toString());
                 }
+                String filesAdded = TextUtils.join("\n", listOfPublicity);
+                textView.setText(filesAdded);
             }
         }
     };
@@ -116,7 +128,7 @@ public class FlipperViewActivity extends AppCompatActivity implements Connection
 
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.activity_flipper_view);
+        setContentView(R.layout.activity_flipper_view_demo);
 
         viewManager();
         showPublicityInFlipperView();
@@ -208,14 +220,44 @@ public class FlipperViewActivity extends AppCompatActivity implements Connection
     public void onBackPressed() {
         new AlertDialog.Builder(this).setTitle(getString(R.string.tittle_exit)).setMessage(getString(R.string.body_exit)).setNegativeButton(android.R.string.no, null).setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface arg0, int arg1) {
-                FlipperViewActivity.super.onBackPressed();
+                FlipperViewDemoActivity.super.onBackPressed();
                 android.os.Process.killProcess(android.os.Process.myPid());
             }
         }).create().show();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_flipper_view_demo, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
     public void viewManager() {
+        mMapFragment = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map));
+        mMap = mMapFragment.getMap();
+
         flipper = (ViewFlipper) findViewById(R.id.viewFlipper);
+        textView = (TextView) findViewById(R.id.tvImagesAddedText);
+
+        mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+        mMap.setMyLocationEnabled(true);
+        mMap.setTrafficEnabled(true);
     }
 
     public void settingsManager() {
@@ -284,6 +326,13 @@ public class FlipperViewActivity extends AppCompatActivity implements Connection
     public void updateUI() {
         if (mCurrentLocation != null) {
             LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver, new IntentFilter("t"));
+
+            double latitude = mCurrentLocation.getLatitude();
+            double longitude = mCurrentLocation.getLongitude();
+
+            LatLng latLng = new LatLng(latitude, longitude);
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+            mMap.animateCamera(CameraUpdateFactory.zoomTo(16));
         }
     }
 
@@ -324,6 +373,10 @@ public class FlipperViewActivity extends AppCompatActivity implements Connection
             mGeofenceList.add(geofencesBuilder(reader));
         }
         reader.endArray();
+
+        for (int i = 0; i < mCircleOptions.size(); i++) {
+            mMap.addCircle(mCircleOptions.get(i));
+        }
     }
 
     public Geofence geofencesBuilder(JsonReader reader) throws IOException {
@@ -468,6 +521,9 @@ public class FlipperViewActivity extends AppCompatActivity implements Connection
         }
         flipper.startFlipping();
         reproduceVideoWhileFlipping();
+
+        String filesAdded = TextUtils.join("\n", listOfPublicity);
+        textView.setText(filesAdded);
     }
 
     public void reproduceVideoWhileFlipping() {

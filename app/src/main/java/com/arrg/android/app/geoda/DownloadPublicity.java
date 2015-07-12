@@ -2,6 +2,7 @@ package com.arrg.android.app.geoda;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.util.JsonReader;
@@ -171,8 +172,17 @@ public class DownloadPublicity {
 
             tvLoad.setText(getContext().getString(R.string.download_complete));
 
-            Intent i = new Intent(getContext(), FlipperViewActivity.class);
-            getContext().startActivity(i);
+            SharedPreferences preferences = getContext().getSharedPreferences(Constants.PACKAGE_NAME + ".STARTUP_SETTINGS_PREFERENCES", Context.MODE_PRIVATE);
+            String type = preferences.getString("type_of_app", "Real");
+
+            if (type.toUpperCase().equals("DEMO")) {
+                Intent i = new Intent(getContext(), FlipperViewDemoActivity.class);
+                getContext().startActivity(i);
+            } else {
+                Intent i = new Intent(getContext(), FlipperViewActivity.class);
+                getContext().startActivity(i);
+            }
+
             ((AppCompatActivity)getContext()).overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
             ((AppCompatActivity)getContext()).finish();
         }
