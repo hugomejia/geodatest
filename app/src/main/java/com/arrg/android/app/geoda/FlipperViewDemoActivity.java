@@ -242,7 +242,9 @@ public class FlipperViewDemoActivity extends AppCompatActivity implements Google
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            Intent i = new Intent(this, SettingsActivity.class);
+            startActivity(i);
+            overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
         }
 
         return super.onOptionsItemSelected(item);
