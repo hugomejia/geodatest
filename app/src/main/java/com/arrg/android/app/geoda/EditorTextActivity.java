@@ -1,7 +1,10 @@
 package com.arrg.android.app.geoda;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -82,6 +85,16 @@ public class EditorTextActivity extends AppCompatActivity {
                     fOut.close();
 
                     Toast.makeText(getBaseContext(), getString(R.string.done), Toast.LENGTH_SHORT).show();
+
+                    if (intent.getStringExtra("name").equals("TypeOfApp.json")) {
+                        new AlertDialog.Builder(this).setTitle(getString(R.string.restart_app_title)).setMessage(getString(R.string.restart_app_body)).setNegativeButton(android.R.string.no, null).setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface arg0, int arg1) {
+                                Intent i = getPackageManager().getLaunchIntentForPackage(getPackageName());
+                                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(i);
+                            }
+                        }).create().show();
+                    }
                 } catch (Exception e) {
                     Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                 }

@@ -42,4 +42,6 @@
     <string name="title_activity_editor_text">Editor de texto</string>
     <string name="save_file">Guardar</string>
     <string name="done">Hecho</string>
+    <string name="restart_app_title">Reiniciar</string>
+    <string name="restart_app_body">¿Deseas reiniciar la aplicación automaticamente?</string>
 </resources>

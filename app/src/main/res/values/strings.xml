@@ -41,4 +41,6 @@
     <string name="title_activity_editor_text">Editor Text</string>
     <string name="save_file">Save</string>
     <string name="done">Done</string>
+    <string name="restart_app_title">Restart</string>
+    <string name="restart_app_body">You want to restart the application automatically?</string>
 </resources>

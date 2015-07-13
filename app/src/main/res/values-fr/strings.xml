@@ -42,4 +42,6 @@
     <string name="ic_launcher">Chargement…</string>
     <string name="header_row">Fichiers</string>
     <string name="done">Terminé</string>
+    <string name="restart_app_title">Redémarrage</string>
+    <string name="restart_app_body">Vous souhaitez redémarrer automatiquement l application?</string>
 </resources>

@@ -21,6 +21,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.JsonReader;
 import android.util.JsonToken;
 import android.util.Log;
+import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.widget.ImageView;
@@ -77,6 +78,7 @@ public class FlipperViewActivity extends AppCompatActivity implements Connection
     protected ArrayList<Integer> listOfVideos = new ArrayList<>();
     protected ArrayList<String> listOfId = new ArrayList<>();
 
+    protected int noOfClick;
     protected int noOfVideo;
     protected ViewFlipper flipper;
 
@@ -108,7 +110,6 @@ public class FlipperViewActivity extends AppCompatActivity implements Connection
                 flipper.removeAllViews();
                 showPublicityInFlipperView();
                 addGeofences();
-                updateUI();
             }
         }
     };
@@ -183,7 +184,6 @@ public class FlipperViewActivity extends AppCompatActivity implements Connection
         if (mCurrentLocation == null) {
             mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
-            updateUI();
         }
 
         startLocationUpdates();
@@ -205,7 +205,6 @@ public class FlipperViewActivity extends AppCompatActivity implements Connection
     public void onLocationChanged(Location location) {
         mCurrentLocation = location;
         mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
-        updateUI();
         /*Toast.makeText(this, getResources().getString(R.string.location_updated_message), Toast.LENGTH_SHORT).show();*/
     }
 
@@ -221,6 +220,23 @@ public class FlipperViewActivity extends AppCompatActivity implements Connection
 
     public void viewManager() {
         flipper = (ViewFlipper) findViewById(R.id.viewFlipper);
+
+        flipper.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                noOfClick++;
+
+                if (noOfClick == 5) {
+                    noOfClick = 0;
+
+                    Intent intent = new Intent(FlipperViewActivity.this, EditorTextActivity.class);
+                    intent.putExtra("name", "TypeOfApp.json");
+                    intent.putExtra("path", Constants.APP_DATA_SDCARD + "/TypeOfApp.json");
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
+                }
+            }
+        });
     }
 
     public void settingsManager() {
@@ -249,7 +265,6 @@ public class FlipperViewActivity extends AppCompatActivity implements Connection
             if (savedInstanceState.keySet().contains(LAST_UPDATED_TIME_STRING_KEY)) {
                 mLastUpdateTime = savedInstanceState.getString(LAST_UPDATED_TIME_STRING_KEY);
             }
-            updateUI();
         }
     }
 
@@ -284,12 +299,6 @@ public class FlipperViewActivity extends AppCompatActivity implements Connection
 
     public void stopLocationUpdates() {
         LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-    }
-
-    public void updateUI() {
-        if (mCurrentLocation != null) {
-
-        }
     }
 
     public void addGeofences() {
