@@ -67,7 +67,6 @@
         <activity
             android:name=".SettingsActivity"
             android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
             android:label="@string/action_settings"
             android:theme="@style/AppDemoTheme">
             <meta-data
@@ -77,7 +76,6 @@
         <activity
             android:name=".EditorTextActivity"
             android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"
             android:label="@string/title_activity_editor_text"
             android:theme="@style/AppDemoTheme">
 
