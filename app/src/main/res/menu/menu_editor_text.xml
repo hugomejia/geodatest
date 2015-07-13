@@ -6,6 +6,5 @@
         android:id="@+id/action_save"
         android:orderInCategory="100"
         android:title="@string/save_file"
-        android:icon="@android:drawable/ic_menu_save"
-        app:showAsAction="ifRoom|withText" />
+        app:showAsAction="always" />
 </menu>
