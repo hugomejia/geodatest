@@ -39,4 +39,7 @@
     <string name="images_added_label">Publicidad agregada:</string>
     <string name="header_row">Archivos</string>
     <string name="unable_to_open_file">Incapaz de abrir el archivo, necesitas un lector de archivos json.</string>
+    <string name="title_activity_editor_text">Editor de texto</string>
+    <string name="save_file">Guardar</string>
+    <string name="done">Hecho</string>
 </resources>

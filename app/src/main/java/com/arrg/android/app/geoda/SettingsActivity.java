@@ -2,19 +2,16 @@ package com.arrg.android.app.geoda;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -35,18 +32,37 @@ public class SettingsActivity extends AppCompatActivity {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                File file = new File(files.get(position).getPathOfFile());
+                /*File file = new File(files.get(position).getPathOfFile());
 
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.fromFile(file));
-                intent.setType("application/json");
+                intent.setType("application/json");*/
 
+                Intent intent = new Intent(SettingsActivity.this, EditorTextActivity.class);
+                intent.putExtra("name", files.get(position).getNameOfFile());
+                intent.putExtra("path", files.get(position).getPathOfFile());
                 try {
                     startActivity(intent);
+                    overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
                 } catch (Exception e) {
                     Toast.makeText(SettingsActivity.this, getString(R.string.unable_to_open_file), Toast.LENGTH_SHORT).show();
-                };
+                }
+                ;
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        switch (id) {
+            case android.R.id.home:
+                finish();
+                overridePendingTransition(R.anim.pull_in_left, R.anim.push_out_right);
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -56,9 +72,9 @@ public class SettingsActivity extends AppCompatActivity {
         finish();
     }
 
-    private ArrayList<ItemRow> files(){
+    private ArrayList<ItemRow> files() {
         files = new ArrayList<>();
-        files.add(new ItemRow(getString(R.string.header_row)));
+        //files.add(new ItemRow(getString(R.string.header_row)));
 
         File[] jsonFiles = new File(Constants.APP_DATA_SDCARD).listFiles();
 

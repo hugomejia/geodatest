@@ -56,7 +56,7 @@ public class FlipperViewActivity extends AppCompatActivity implements Connection
     protected static final String tag = "LifeCycleEventsMA";
     protected static final String TAG = "c-and-m-geofences";
 
-    public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 2500;
+    public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 1000;
     public static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = UPDATE_INTERVAL_IN_MILLISECONDS / 2;
 
     protected final static String REQUESTING_LOCATION_UPDATES_KEY = "requesting-location-updates-key";
@@ -76,7 +76,6 @@ public class FlipperViewActivity extends AppCompatActivity implements Connection
     protected ArrayList<Geofence> mGeofenceList;
     protected ArrayList<Integer> listOfVideos = new ArrayList<>();
     protected ArrayList<String> listOfId = new ArrayList<>();
-    protected ArrayList<String> listOfPublicity = new ArrayList<>();
 
     protected int noOfVideo;
     protected ViewFlipper flipper;
@@ -88,8 +87,6 @@ public class FlipperViewActivity extends AppCompatActivity implements Connection
             String idOfGeofence = intent.getStringExtra("t");
 
             if (typeOfTransition.equals(getString(R.string.geofence_transition_entered))) {
-                Toast.makeText(FlipperViewActivity.this, getResources().getString(R.string.geofence_transition_entered) + " " + idOfGeofence, Toast.LENGTH_SHORT).show();
-
                 if (idOfGeofence.contains(",")) {
                     String idGeofences[] = idOfGeofence.split(",");
                     for (String id : idGeofences) {
@@ -97,15 +94,21 @@ public class FlipperViewActivity extends AppCompatActivity implements Connection
                             listOfId.add(id.trim());
                             addPublicityInFlipperView(id.trim());
                         }
-                        Log.d(TAG, "Values of ID added: " + listOfId.toString());
                     }
                 } else {
                     if (!listOfId.contains(idOfGeofence)) {
                         listOfId.add(idOfGeofence);
                         addPublicityInFlipperView(idOfGeofence);
                     }
-                    Log.d(TAG, "Values of ID added: " + listOfId.toString());
                 }
+            }  else if (typeOfTransition.equals(getString(R.string.geofence_transition_exited))) {
+                listOfId.clear();
+                listOfVideos.clear();
+                removeGeofences();
+                flipper.removeAllViews();
+                showPublicityInFlipperView();
+                addGeofences();
+                updateUI();
             }
         }
     };
@@ -129,6 +132,8 @@ public class FlipperViewActivity extends AppCompatActivity implements Connection
         }
         buildGoogleApiClient();
         gpsManager();
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver, new IntentFilter("t"));
     }
 
     @Override
@@ -283,7 +288,7 @@ public class FlipperViewActivity extends AppCompatActivity implements Connection
 
     public void updateUI() {
         if (mCurrentLocation != null) {
-            LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver, new IntentFilter("t"));
+
         }
     }
 
@@ -411,17 +416,11 @@ public class FlipperViewActivity extends AppCompatActivity implements Connection
                     Bitmap bmp = BitmapFactory.decodeFile(imagesPath.listFiles()[count].getAbsolutePath());
                     imageView.setImageBitmap(bmp);
 
-                    Log.d(TAG, "Added File " + imagesPath.listFiles()[count].getName());
-                    listOfPublicity.add(idOfGeofence + " - " + imagesPath.listFiles()[count].getName());
-
                     flipper.addView(imageView);
                 } else if (imagesPath.listFiles()[count].getAbsolutePath().contains(".mp4")) {
                     videoView.setVideoPath(imagesPath.listFiles()[count].getAbsolutePath());
                     videoView.requestFocus();
                     videoView.setKeepScreenOn(true);
-
-                    Log.d(TAG, "Added File " + imagesPath.listFiles()[count].getName());
-                    listOfPublicity.add(idOfGeofence + " - " + imagesPath.listFiles()[count].getName());
 
                     flipper.addView(videoView);
                     listOfVideos.add(noOfVideo);
@@ -449,17 +448,11 @@ public class FlipperViewActivity extends AppCompatActivity implements Connection
                 Bitmap bmp = BitmapFactory.decodeFile(imagesPath.listFiles()[count].getAbsolutePath());
                 imageView.setImageBitmap(bmp);
 
-                Log.d(TAG, "Added File " + imagesPath.listFiles()[count].getName());
-                listOfPublicity.add("Publicity - " + imagesPath.listFiles()[count].getName());
-
                 flipper.addView(imageView);
             } else if (imagesPath.listFiles()[count].getAbsolutePath().contains(".mp4")) {
                 videoView.setVideoPath(imagesPath.listFiles()[count].getAbsolutePath());
                 videoView.requestFocus();
                 videoView.setKeepScreenOn(true);
-
-                Log.d(TAG, "Added File " + imagesPath.listFiles()[count].getName());
-                listOfPublicity.add("Publicity - " + imagesPath.listFiles()[count].getName());
 
                 flipper.addView(videoView);
                 listOfVideos.add(noOfVideo);

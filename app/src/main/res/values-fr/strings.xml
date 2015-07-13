@@ -35,4 +35,11 @@
     <string name="unknown_geofence_error">Erreur inconnue: le service de Geofence ne sont pas disponibles maintenant</string>
     <string name="unknown_geofence_transition">Transition Inconnu</string>
     <string name="welcome_to">Bienvenue A</string>
+    <string name="unable_to_open_file">Impossible d ouvrir le fichier , vous avez besoin d un lecteur de fichier JSON .</string>
+    <string name="title_activity_editor_text">Editeur texte</string>
+    <string name="save_file">Sauvegarder</string>
+    <string name="images_added_label">Publicité ajouté:</string>
+    <string name="ic_launcher">Chargement…</string>
+    <string name="header_row">Fichiers</string>
+    <string name="done">Terminé</string>
 </resources>

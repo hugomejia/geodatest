@@ -24,7 +24,6 @@ import android.util.JsonToken;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -63,7 +62,7 @@ public class FlipperViewDemoActivity extends AppCompatActivity implements Google
     protected static final String tag = "LifeCycleEventsMA";
     protected static final String TAG = "c-and-m-geofences";
 
-    public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 2500;
+    public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 1000;
     public static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = UPDATE_INTERVAL_IN_MILLISECONDS / 2;
 
     protected final static String REQUESTING_LOCATION_UPDATES_KEY = "requesting-location-updates-key";
@@ -118,6 +117,18 @@ public class FlipperViewDemoActivity extends AppCompatActivity implements Google
                 }
                 String filesAdded = TextUtils.join("\n", listOfPublicity);
                 textView.setText(filesAdded);
+            } else if (typeOfTransition.equals(getString(R.string.geofence_transition_exited))) {
+                Toast.makeText(FlipperViewDemoActivity.this, getResources().getString(R.string.geofence_transition_exited) + " " + idOfGeofence, Toast.LENGTH_SHORT).show();
+
+                textView.setText("");
+                listOfId.clear();
+                listOfPublicity.clear();
+                listOfVideos.clear();
+                removeGeofences();
+                flipper.removeAllViews();
+                showPublicityInFlipperView();
+                addGeofences();
+                updateUI();
             }
         }
     };
@@ -127,7 +138,6 @@ public class FlipperViewDemoActivity extends AppCompatActivity implements Google
         Log.d(tag, "In the onCreate() event");
 
         super.onCreate(savedInstanceState);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_flipper_view_demo);
 
         viewManager();
@@ -141,6 +151,8 @@ public class FlipperViewDemoActivity extends AppCompatActivity implements Google
         }
         buildGoogleApiClient();
         gpsManager();
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver, new IntentFilter("t"));
     }
 
     @Override
@@ -327,7 +339,6 @@ public class FlipperViewDemoActivity extends AppCompatActivity implements Google
 
     public void updateUI() {
         if (mCurrentLocation != null) {
-            LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver, new IntentFilter("t"));
 
             double latitude = mCurrentLocation.getLatitude();
             double longitude = mCurrentLocation.getLongitude();
@@ -345,8 +356,7 @@ public class FlipperViewDemoActivity extends AppCompatActivity implements Google
         }
         try {
             mGeofencesAdded = true;
-            LocationServices.GeofencingApi.addGeofences(mGoogleApiClient, getGeofencingRequest(), getGeofencePendingIntent()
-            ).setResultCallback(this);
+            LocationServices.GeofencingApi.addGeofences(mGoogleApiClient, getGeofencingRequest(), getGeofencePendingIntent()).setResultCallback(this);
         } catch (SecurityException securityException) {
             logSecurityException(securityException);
         }

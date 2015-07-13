@@ -79,6 +79,11 @@ public class GeofenceTransitionsIntentService extends IntentService {
 
             // Send notification and log the transition details.
             sendNotification(geofenceTransitionDetails);
+
+            Intent i = new Intent("t");
+            i.putExtra("i", getString(R.string.geofence_transition_exited));
+            i.putExtra("t", idOfGeofence);
+            LocalBroadcastManager.getInstance(this).sendBroadcast(i);
         } else {
             // Log the error.
             Log.e(TAG, getString(R.string.geofence_transition_invalid_type, geofenceTransition));
