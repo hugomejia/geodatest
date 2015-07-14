@@ -80,6 +80,8 @@ public class FlipperViewActivity extends AppCompatActivity implements Connection
 
     protected int noOfClick;
     protected int noOfVideo;
+    protected int prepareGC = 0;
+
     protected ViewFlipper flipper;
 
     protected BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -207,7 +209,13 @@ public class FlipperViewActivity extends AppCompatActivity implements Connection
         mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
 
         LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver, new IntentFilter("t"));
-        System.gc();
+
+        prepareGC++;
+
+        if (prepareGC == 300) {
+            prepareGC = 0;
+            System.gc();
+        }
         /*Toast.makeText(this, getResources().getString(R.string.location_updated_message), Toast.LENGTH_SHORT).show();*/
     }
 

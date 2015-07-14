@@ -85,6 +85,7 @@ public class FlipperViewDemoActivity extends AppCompatActivity implements Google
     protected ArrayList<String> listOfPublicity = new ArrayList<>();
 
     protected int noOfVideo;
+    protected int prepareGC = 0;
 
     protected SupportMapFragment mMapFragment;
     protected TextView textView;
@@ -338,7 +339,13 @@ public class FlipperViewDemoActivity extends AppCompatActivity implements Google
     public void updateUI() {
         if (mCurrentLocation != null) {
             LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver, new IntentFilter("t"));
-            System.gc();
+
+            prepareGC++;
+
+            if (prepareGC == 300) {
+                prepareGC = 0;
+                System.gc();
+            }
 
             double latitude = mCurrentLocation.getLatitude();
             double longitude = mCurrentLocation.getLongitude();
