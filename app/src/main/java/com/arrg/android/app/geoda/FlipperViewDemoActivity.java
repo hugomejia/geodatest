@@ -85,7 +85,6 @@ public class FlipperViewDemoActivity extends AppCompatActivity implements Google
     protected ArrayList<String> listOfPublicity = new ArrayList<>();
 
     protected int noOfVideo;
-    protected int prepareGC = 0;
 
     protected SupportMapFragment mMapFragment;
     protected TextView textView;
@@ -164,6 +163,7 @@ public class FlipperViewDemoActivity extends AppCompatActivity implements Google
     @Override
     protected void onResume() {
         Log.d(tag, "In the onResume() event");
+        LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver, new IntentFilter("t"));
         super.onResume();
         if (mGoogleApiClient.isConnected() && mRequestingLocationUpdates) {
             startLocationUpdates();
@@ -191,6 +191,7 @@ public class FlipperViewDemoActivity extends AppCompatActivity implements Google
     protected void onDestroy() {
         Log.d(tag, "In the onDestroy() event");
         removeGeofences();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mReceiver);
         super.onDestroy();
     }
 
@@ -223,6 +224,7 @@ public class FlipperViewDemoActivity extends AppCompatActivity implements Google
     public void onLocationChanged(Location location) {
         mCurrentLocation = location;
         mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
+
         updateUI();
         /*Toast.makeText(this, getResources().getString(R.string.location_updated_message), Toast.LENGTH_SHORT).show();*/
     }
@@ -338,15 +340,6 @@ public class FlipperViewDemoActivity extends AppCompatActivity implements Google
 
     public void updateUI() {
         if (mCurrentLocation != null) {
-            LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver, new IntentFilter("t"));
-
-            prepareGC++;
-
-            if (prepareGC == 300) {
-                prepareGC = 0;
-                System.gc();
-            }
-
             double latitude = mCurrentLocation.getLatitude();
             double longitude = mCurrentLocation.getLongitude();
 

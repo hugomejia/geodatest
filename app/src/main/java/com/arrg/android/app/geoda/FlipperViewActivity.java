@@ -80,7 +80,6 @@ public class FlipperViewActivity extends AppCompatActivity implements Connection
 
     protected int noOfClick;
     protected int noOfVideo;
-    protected int prepareGC = 0;
 
     protected ViewFlipper flipper;
 
@@ -149,6 +148,7 @@ public class FlipperViewActivity extends AppCompatActivity implements Connection
     @Override
     protected void onResume() {
         Log.d(tag, "In the onResume() event");
+        LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver, new IntentFilter("t"));
         super.onResume();
         if (mGoogleApiClient.isConnected() && mRequestingLocationUpdates) {
             startLocationUpdates();
@@ -176,6 +176,7 @@ public class FlipperViewActivity extends AppCompatActivity implements Connection
     protected void onDestroy() {
         Log.d(tag, "In the onDestroy() event");
         removeGeofences();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mReceiver);
         super.onDestroy();
     }
 
@@ -208,14 +209,6 @@ public class FlipperViewActivity extends AppCompatActivity implements Connection
         mCurrentLocation = location;
         mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver, new IntentFilter("t"));
-
-        prepareGC++;
-
-        if (prepareGC == 300) {
-            prepareGC = 0;
-            System.gc();
-        }
         /*Toast.makeText(this, getResources().getString(R.string.location_updated_message), Toast.LENGTH_SHORT).show();*/
     }
 
