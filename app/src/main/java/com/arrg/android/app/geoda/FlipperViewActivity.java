@@ -205,6 +205,9 @@ public class FlipperViewActivity extends AppCompatActivity implements Connection
     public void onLocationChanged(Location location) {
         mCurrentLocation = location;
         mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver, new IntentFilter("t"));
+        System.gc();
         /*Toast.makeText(this, getResources().getString(R.string.location_updated_message), Toast.LENGTH_SHORT).show();*/
     }
 

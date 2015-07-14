@@ -151,8 +151,6 @@ public class FlipperViewDemoActivity extends AppCompatActivity implements Google
         }
         buildGoogleApiClient();
         gpsManager();
-
-        LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver, new IntentFilter("t"));
     }
 
     @Override
@@ -339,6 +337,8 @@ public class FlipperViewDemoActivity extends AppCompatActivity implements Google
 
     public void updateUI() {
         if (mCurrentLocation != null) {
+            LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver, new IntentFilter("t"));
+            System.gc();
 
             double latitude = mCurrentLocation.getLatitude();
             double longitude = mCurrentLocation.getLongitude();

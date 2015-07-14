@@ -124,6 +124,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         systemDate.setToNow();
 
         boolean firstInstall = preferences.getBoolean("first_start", false);
+        boolean wasEdited = preferences.getBoolean("was_edited", false);
         String dateStored = preferences.getString("last_date", String.valueOf(systemDate.monthDay));
 
         if (!firstInstall || !String.valueOf(systemDate.monthDay).equals(dateStored)) {
@@ -131,18 +132,29 @@ public class SplashScreenActivity extends AppCompatActivity {
             creatingNewFolderData();
 
             edit.putBoolean("first_start", true);
+            edit.putBoolean("was_edited", true);
             edit.putString("last_date", String.valueOf(systemDate.monthDay));
 
             edit.apply();
             startDownload();
         } else {
-
-            InputStream in;
-            try {
-                in = new FileInputStream(Constants.APP_DATA_SDCARD + "/TypeOfApp.json");
-                readJSon(in);
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (wasEdited) {
+                InputStream in;
+                try {
+                    in = new FileInputStream(Constants.APP_DATA_SDCARD + "/TypeOfApp.json");
+                    readJSon(in);
+                    edit.putBoolean("was_edited", false);
+                    edit.apply();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                DownloadPublicity downloadPublicity = new DownloadPublicity(SplashScreenActivity.this, tvLoading);
+                try {
+                    downloadPublicity.downloadFiles();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

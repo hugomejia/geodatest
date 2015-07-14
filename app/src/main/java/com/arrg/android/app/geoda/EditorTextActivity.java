@@ -1,8 +1,10 @@
 package com.arrg.android.app.geoda;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -87,14 +89,19 @@ public class EditorTextActivity extends AppCompatActivity {
                     Toast.makeText(getBaseContext(), getString(R.string.done), Toast.LENGTH_SHORT).show();
 
                     if (intent.getStringExtra("name").equals("TypeOfApp.json")) {
-                        new AlertDialog.Builder(this).setTitle(getString(R.string.restart_app_title)).setMessage(getString(R.string.restart_app_body)).setNegativeButton(android.R.string.no, null).setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface arg0, int arg1) {
-                                Intent i = getPackageManager().getLaunchIntentForPackage(getPackageName());
-                                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                startActivity(i);
-                            }
-                        }).create().show();
+                        SharedPreferences preferences = getSharedPreferences(Constants.PACKAGE_NAME + ".STARTUP_SETTINGS_PREFERENCES", Context.MODE_PRIVATE);
+                        SharedPreferences.Editor edit = preferences.edit();
+                        edit.putBoolean("was_edited", true);
+                        edit.apply();
                     }
+
+                    new AlertDialog.Builder(this).setTitle(getString(R.string.restart_app_title)).setMessage(getString(R.string.restart_app_body)).setNegativeButton(android.R.string.no, null).setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface arg0, int arg1) {
+                            Intent i = getPackageManager().getLaunchIntentForPackage(getPackageName());
+                            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(i);
+                        }
+                    }).create().show();
                 } catch (Exception e) {
                     Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
