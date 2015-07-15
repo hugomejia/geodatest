@@ -132,7 +132,6 @@ public class SplashScreenActivity extends AppCompatActivity {
             creatingNewFolderData();
 
             edit.putBoolean("first_start", true);
-            edit.putBoolean("was_edited", true);
             edit.putString("last_date", String.valueOf(systemDate.monthDay));
 
             edit.apply();
@@ -143,8 +142,6 @@ public class SplashScreenActivity extends AppCompatActivity {
                 try {
                     in = new FileInputStream(Constants.APP_DATA_SDCARD + "/TypeOfApp.json");
                     readJSon(in);
-                    edit.putBoolean("was_edited", false);
-                    edit.apply();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
