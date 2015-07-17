@@ -1,7 +1,6 @@
 package com.arrg.android.app.geoda;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
@@ -37,7 +36,7 @@ public class SettingsActivity extends AppCompatActivity {
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.fromFile(file));
                 intent.setType("application/json");*/
 
-                Intent intent = new Intent(SettingsActivity.this, EditorTextActivity.class);
+                Intent intent = new Intent(SettingsActivity.this, TextEditorActivity.class);
                 intent.putExtra("name", files.get(position).getNameOfFile());
                 intent.putExtra("path", files.get(position).getPathOfFile());
                 try {

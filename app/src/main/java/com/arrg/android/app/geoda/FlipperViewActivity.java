@@ -233,7 +233,7 @@ public class FlipperViewActivity extends AppCompatActivity implements Connection
                 if (noOfClick == 5) {
                     noOfClick = 0;
 
-                    Intent intent = new Intent(FlipperViewActivity.this, EditorTextActivity.class);
+                    Intent intent = new Intent(FlipperViewActivity.this, TextEditorActivity.class);
                     intent.putExtra("name", "TypeOfApp.json");
                     intent.putExtra("path", Constants.APP_DATA_SDCARD + "/TypeOfApp.json");
                     startActivity(intent);
