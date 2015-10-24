@@ -2,13 +2,13 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 22
-    buildToolsVersion "23.0.0 rc2"
+    buildToolsVersion "23.0.0"
 
     defaultConfig {
         applicationId "com.arrg.android.app.geoda"
         minSdkVersion 14
         targetSdkVersion 22
-        versionCode 0
+        versionCode 1
         versionName "0.2.6.5"
     }
     buildTypes {

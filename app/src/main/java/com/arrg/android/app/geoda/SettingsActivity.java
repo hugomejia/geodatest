@@ -36,7 +36,7 @@ public class SettingsActivity extends AppCompatActivity {
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.fromFile(file));
                 intent.setType("application/json");*/
 
-                Intent intent = new Intent(SettingsActivity.this, TextEditorActivity.class);
+                Intent intent = new Intent(SettingsActivity.this, EditorTextActivity.class);
                 intent.putExtra("name", files.get(position).getNameOfFile());
                 intent.putExtra("path", files.get(position).getPathOfFile());
                 try {
@@ -45,7 +45,6 @@ public class SettingsActivity extends AppCompatActivity {
                 } catch (Exception e) {
                     Toast.makeText(SettingsActivity.this, getString(R.string.unable_to_open_file), Toast.LENGTH_SHORT).show();
                 }
-                ;
             }
         });
     }

@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Geoda.iml" filepath="$PROJECT_DIR$/Geoda.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/geodatest.iml" filepath="$PROJECT_DIR$/geodatest.iml" />
     </modules>
   </component>
 </project>
