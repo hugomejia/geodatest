@@ -74,7 +74,7 @@
                 android:value="com.arrg.android.app.geoda.FlipperViewDemoActivity" />
         </activity>
         <activity
-            android:name=".TextEditorActivity"
+            android:name=".EditorTextActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_editor_text"
             android:theme="@style/AppDemoTheme">
