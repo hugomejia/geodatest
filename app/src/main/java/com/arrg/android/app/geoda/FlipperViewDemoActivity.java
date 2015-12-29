@@ -3,7 +3,6 @@ package com.arrg.android.app.geoda;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -15,7 +14,6 @@ import android.location.LocationManager;
 import android.media.MediaPlayer;
 import android.provider.Settings;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -231,6 +229,7 @@ public class FlipperViewDemoActivity extends AppCompatActivity implements Google
 
     @Override
     public void onBackPressed() {
+        //Mata proceso y cierra Geoda. Se reemplaza por un finish() para pasar a pantalla completa
         /*new AlertDialog.Builder(this).setTitle(getString(R.string.tittle_exit)).setMessage(getString(R.string.body_exit)).setNegativeButton(android.R.string.no, null).setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface arg0, int arg1) {
                 FlipperViewDemoActivity.super.onBackPressed();
@@ -509,7 +508,7 @@ public class FlipperViewDemoActivity extends AppCompatActivity implements Google
             VideoView videoView = new VideoView(this);
 
             imageView.setLayoutParams(findViewById(R.id.llMain).getLayoutParams());
-            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             videoView.setLayoutParams(findViewById(R.id.llMain).getLayoutParams());
 
             if (imagesPath.listFiles()[count].getAbsolutePath().contains(".jpg")) {
