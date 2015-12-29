@@ -160,6 +160,12 @@ public class FlipperViewActivity extends AppCompatActivity implements Connection
             startActivity(i);
             overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
         }
+        //nuevo
+       /* if (id == R.id.action_more){
+            Intent j = new Intent(this, FlipperViewDemoActivity.class);
+            startActivity(j);
+            overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
+        }*/
 
         return super.onOptionsItemSelected(item);
     }
@@ -259,9 +265,11 @@ public class FlipperViewActivity extends AppCompatActivity implements Connection
                 if (noOfClick == 5) {
                     noOfClick = 0;
 
-                    Intent intent = new Intent(FlipperViewActivity.this, EditorTextActivity.class);
+/*                    Intent intent = new Intent(FlipperViewActivity.this, EditorTextActivity.class);
                     intent.putExtra("name", "TypeOfApp.json");
                     intent.putExtra("path", Constants.APP_DATA_SDCARD + "/TypeOfApp.json");
+                    startActivity(intent);*/
+                    Intent intent = new Intent (FlipperViewActivity.this, FlipperViewDemoActivity.class);
                     startActivity(intent);
                     overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
                 }

@@ -36,8 +36,9 @@ public class SplashScreenActivity extends AppCompatActivity {
 
     private SharedPreferences preferences;
     private final String TAG = "LifeCycleEventsSCA";
-    private final String URLJson[] = {"https://www.dropbox.com/s/wjfj6wheq0fhg70/TypeOfApp.json?dl=1", Constants.APP_DATA_SDCARD, "TypeOfApp.json"};
-
+    //URL JSON que contiene los otros dos archivos planos
+    //private final String URLJson[] = {"https://www.dropbox.com/s/wjfj6wheq0fhg70/TypeOfApp.json?dl=1", Constants.APP_DATA_SDCARD, "TypeOfApp.json"};
+    private final String URLJson[] = {"https://www.dropbox.com/s/16ic97v04q08lcf/TypeOfApp.json?dl=1", Constants.APP_DATA_SDCARD, "TypeOfApp.json"};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate");

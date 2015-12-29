@@ -231,12 +231,14 @@ public class FlipperViewDemoActivity extends AppCompatActivity implements Google
 
     @Override
     public void onBackPressed() {
-        new AlertDialog.Builder(this).setTitle(getString(R.string.tittle_exit)).setMessage(getString(R.string.body_exit)).setNegativeButton(android.R.string.no, null).setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+        /*new AlertDialog.Builder(this).setTitle(getString(R.string.tittle_exit)).setMessage(getString(R.string.body_exit)).setNegativeButton(android.R.string.no, null).setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface arg0, int arg1) {
                 FlipperViewDemoActivity.super.onBackPressed();
                 android.os.Process.killProcess(android.os.Process.myPid());
             }
-        }).create().show();
+        }).create().show();*/
+        finish();
+
     }
 
     @Override
