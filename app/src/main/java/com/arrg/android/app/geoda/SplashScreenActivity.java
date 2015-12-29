@@ -37,8 +37,7 @@ public class SplashScreenActivity extends AppCompatActivity {
     private SharedPreferences preferences;
     private final String TAG = "LifeCycleEventsSCA";
     //URL JSON que contiene los otros dos archivos planos
-    //private final String URLJson[] = {"https://www.dropbox.com/s/wjfj6wheq0fhg70/TypeOfApp.json?dl=1", Constants.APP_DATA_SDCARD, "TypeOfApp.json"};
-    private final String URLJson[] = {"https://www.dropbox.com/s/16ic97v04q08lcf/TypeOfApp.json?dl=1", Constants.APP_DATA_SDCARD, "TypeOfApp.json"};
+    private final String URLJson[] = {"https://www.dropbox.com/s/16ic97v04q08lcf/TypeOfApp.json?dl=1", Constants.APP_DATA_SDCARD, "TypeOfApp.json"};//wjfj6wheq0fhg70
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate");
@@ -118,7 +117,7 @@ public class SplashScreenActivity extends AppCompatActivity {
 
     public void loadManager() {
         preferences = getSharedPreferences(Constants.PACKAGE_NAME + ".STARTUP_SETTINGS_PREFERENCES", Context.MODE_PRIVATE);
-        SharedPreferences.Editor edit = preferences.edit();
+        //SharedPreferences.Editor edit = preferences.edit();
 
         Time systemDate = new Time(Time.getCurrentTimezone());
         systemDate.setToNow();
@@ -128,14 +127,16 @@ public class SplashScreenActivity extends AppCompatActivity {
         String dateStored = preferences.getString("last_date", String.valueOf(systemDate.monthDay));
 
         if (!firstInstall || !String.valueOf(systemDate.monthDay).equals(dateStored)) {
-            deletingOldData(new File(Constants.APP_DATA_SDCARD));
+
+            startDownloadJSON();
+            /*deletingOldData(new File(Constants.APP_DATA_SDCARD));
             creatingNewFolderData();
 
             edit.putBoolean("first_start", true);
             edit.putString("last_date", String.valueOf(systemDate.monthDay));
 
             edit.apply();
-            startDownload();
+            startDownload();*/
         } else {
             if (wasEdited) {
                 InputStream in;
@@ -146,6 +147,15 @@ public class SplashScreenActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             } else {
+                /*deletingOldData(new File(Constants.APP_DATA_SDCARD));
+                creatingNewFolderData();
+
+                edit.putBoolean("first_start", true);
+                edit.putString("last_date", String.valueOf(systemDate.monthDay));
+
+                edit.apply();
+                startDownload();*/
+                startDownloadJSON();
                 DownloadPublicity downloadPublicity = new DownloadPublicity(SplashScreenActivity.this, tvLoading);
                 try {
                     downloadPublicity.downloadFiles();
@@ -187,6 +197,23 @@ public class SplashScreenActivity extends AppCompatActivity {
 
     public void startDownload() {
         new DownloadJSonFile().execute(URLJson);
+    }
+
+    public void startDownloadJSON(){
+
+        preferences = getSharedPreferences(Constants.PACKAGE_NAME + ".STARTUP_SETTINGS_PREFERENCES", Context.MODE_PRIVATE);
+        SharedPreferences.Editor edit = preferences.edit();
+        deletingOldData(new File(Constants.APP_DATA_SDCARD));
+        creatingNewFolderData();
+
+        Time systemDate = new Time(Time.getCurrentTimezone());
+        systemDate.setToNow();
+
+        edit.putBoolean("first_start", true);
+        edit.putString("last_date", String.valueOf(systemDate.monthDay));
+
+        edit.apply();
+        startDownload();
     }
 
     public void readJSon(InputStream in) throws IOException {
