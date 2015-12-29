@@ -249,6 +249,7 @@ public class FlipperViewActivity extends AppCompatActivity implements Connection
         new AlertDialog.Builder(this).setTitle(getString(R.string.tittle_exit)).setMessage(getString(R.string.body_exit)).setNegativeButton(android.R.string.no, null).setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface arg0, int arg1) {
                 FlipperViewActivity.super.onBackPressed();
+
                 android.os.Process.killProcess(android.os.Process.myPid());
             }
         }).create().show();
@@ -269,7 +270,7 @@ public class FlipperViewActivity extends AppCompatActivity implements Connection
                     intent.putExtra("name", "TypeOfApp.json");
                     intent.putExtra("path", Constants.APP_DATA_SDCARD + "/TypeOfApp.json");
                     startActivity(intent);*/
-                    Intent intent = new Intent (FlipperViewActivity.this, FlipperViewDemoActivity.class);
+                    Intent intent = new Intent(FlipperViewActivity.this, FlipperViewDemoActivity.class);
                     startActivity(intent);
                     overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
                 }
@@ -488,7 +489,7 @@ public class FlipperViewActivity extends AppCompatActivity implements Connection
             VideoView videoView = new VideoView(this);
 
             imageView.setLayoutParams(findViewById(R.id.llMain).getLayoutParams());
-            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+            imageView.setScaleType(ImageView.ScaleType.CENTER);
             videoView.setLayoutParams(findViewById(R.id.llMain).getLayoutParams());
 
             if (imagesPath.listFiles()[count].getAbsolutePath().contains(".jpg")) {
