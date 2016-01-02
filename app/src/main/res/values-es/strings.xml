@@ -44,4 +44,5 @@
     <string name="done">Hecho</string>
     <string name="restart_app_title">Reiniciar</string>
     <string name="restart_app_body">¿Deseas reiniciar la aplicación automaticamente?</string>
+    <string name="action_more">Detalle</string>
 </resources>

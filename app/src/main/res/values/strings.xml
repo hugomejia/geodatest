@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Geoda</string>
     <string name="action_settings">Settings</string>
+    <string name="action_more">Detail</string>
     <string name="loading">Loading, Please wait…</string>
     <string name="tittle_exit">Exit</string>
     <string name="body_exit">Are you sure you want to exit?</string>
