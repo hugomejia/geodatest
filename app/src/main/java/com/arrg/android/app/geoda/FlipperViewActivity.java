@@ -249,7 +249,6 @@ public class FlipperViewActivity extends AppCompatActivity implements Connection
         new AlertDialog.Builder(this).setTitle(getString(R.string.tittle_exit)).setMessage(getString(R.string.body_exit)).setNegativeButton(android.R.string.no, null).setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface arg0, int arg1) {
                 FlipperViewActivity.super.onBackPressed();
-
                 android.os.Process.killProcess(android.os.Process.myPid());
             }
         }).create().show();
@@ -258,7 +257,17 @@ public class FlipperViewActivity extends AppCompatActivity implements Connection
     public void viewManager() {
         flipper = (ViewFlipper) findViewById(R.id.viewFlipper);
 
-        flipper.setOnClickListener(new View.OnClickListener() {
+        flipper.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+
+                Intent intent = new Intent(FlipperViewActivity.this, FlipperViewDemoActivity.class);
+                startActivity(intent);
+                return false;
+            }
+        });
+
+/*        flipper.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 noOfClick++;
@@ -266,16 +275,16 @@ public class FlipperViewActivity extends AppCompatActivity implements Connection
                 if (noOfClick == 5) {
                     noOfClick = 0;
 
-/*                    Intent intent = new Intent(FlipperViewActivity.this, EditorTextActivity.class);
+*//*                    Intent intent = new Intent(FlipperViewActivity.this, EditorTextActivity.class);
                     intent.putExtra("name", "TypeOfApp.json");
                     intent.putExtra("path", Constants.APP_DATA_SDCARD + "/TypeOfApp.json");
-                    startActivity(intent);*/
+                    startActivity(intent);*//*
                     Intent intent = new Intent(FlipperViewActivity.this, FlipperViewDemoActivity.class);
                     startActivity(intent);
                     overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
                 }
             }
-        });
+        });*/
     }
 
     public void settingsManager() {

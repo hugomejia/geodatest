@@ -8,5 +8,6 @@
     <color name="secondary_text">#727272</color>
     <color name="icons">#FFFFFF</color>
     <color name="background_flipper">#FFFFFF</color>
+    <color name="textColor">#FFFFFF</color>
     <color name="divider">#B6B6B6</color>
 </resources>

@@ -139,6 +139,7 @@ public class SplashScreenActivity extends AppCompatActivity {
             startDownload();*/
         } else {
             if (wasEdited) {
+                Log.d(TAG, "Se guardo el cambio");
                 InputStream in;
                 try {
                     in = new FileInputStream(Constants.APP_DATA_SDCARD + "/TypeOfApp.json");
