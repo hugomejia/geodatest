@@ -4,8 +4,13 @@
     tools:context="com.arrg.android.app.geoda.FlipperViewDemoActivity">
     <item
         android:id="@+id/action_settings"
-        android:orderInCategory="100"
+        android:orderInCategory="101"
         android:title="@string/action_settings"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_block_camera"
+        android:orderInCategory="100"
+        android:title="@string/action_camera"
         app:showAsAction="always" />
 
 </menu>

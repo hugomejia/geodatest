@@ -22,6 +22,7 @@ import android.util.JsonToken;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -83,6 +84,7 @@ public class FlipperViewDemoActivity extends AppCompatActivity implements Google
     protected ArrayList<String> listOfPublicity = new ArrayList<>();
 
     protected int noOfVideo;
+    public int cameraControl=1;
 
     protected SupportMapFragment mMapFragment;
     protected TextView textView;
@@ -136,6 +138,7 @@ public class FlipperViewDemoActivity extends AppCompatActivity implements Google
         Log.d(tag, "In the onCreate() event");
 
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_flipper_view_demo);
 
         viewManager();
@@ -236,6 +239,7 @@ public class FlipperViewDemoActivity extends AppCompatActivity implements Google
                 android.os.Process.killProcess(android.os.Process.myPid());
             }
         }).create().show();*/
+
         finish();
 
     }
@@ -259,6 +263,20 @@ public class FlipperViewDemoActivity extends AppCompatActivity implements Google
             Intent i = new Intent(this, SettingsActivity.class);
             startActivity(i);
             overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
+
+        }
+        if(id==R.id.action_block_camera){
+            switch (cameraControl){
+                case 0:
+                    cameraControl=1;
+                    Toast.makeText(this, getString(R.string.camera_status_on), Toast.LENGTH_LONG).show();
+                    updateUI();
+                    break;
+                case 1:
+                    cameraControl=0;
+                    Toast.makeText(this, getString(R.string.camera_status_off), Toast.LENGTH_LONG).show();
+                    break;
+            }
         }
 
         return super.onOptionsItemSelected(item);
@@ -345,8 +363,11 @@ public class FlipperViewDemoActivity extends AppCompatActivity implements Google
             double longitude = mCurrentLocation.getLongitude();
 
             LatLng latLng = new LatLng(latitude, longitude);
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-            mMap.animateCamera(CameraUpdateFactory.zoomTo(16));
+            if(cameraControl==1){
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+            }
+
         }
     }
 
@@ -393,11 +414,13 @@ public class FlipperViewDemoActivity extends AppCompatActivity implements Google
     }
 
     public Geofence geofencesBuilder(JsonReader reader) throws IOException {
-        String id = null;
+        int id = 0;
         double lat = 0;
         double lon = 0;
         double radio = 0;
         long duration = 0;
+        String color = null;
+        String colorStroke= null;
 
         reader.beginObject();
 
@@ -405,24 +428,28 @@ public class FlipperViewDemoActivity extends AppCompatActivity implements Google
             String name = reader.nextName();
             final boolean isNull = reader.peek() == JsonToken.NULL;
 
-            if (name.equals("id") && !isNull) {
-                id = reader.nextString();
+            if (name.equals("camp_id") && !isNull) {
+                id = reader.nextInt();
             } else if (name.equals("lat") && !isNull) {
                 lat = reader.nextDouble();
-            } else if (name.equals("long") && !isNull) {
+            } else if (name.equals("lng") && !isNull) {
                 lon = reader.nextDouble();
             } else if (name.equals("radio") && !isNull) {
                 radio = reader.nextDouble();
-            } else if (name.equals("duration")) {
+            } else if (name.equals("duration") && !isNull) {
                 duration = reader.nextLong();
-            } else {
+            }else if(name.equals("color") && !isNull){
+                color = reader.nextString();
+            }else if(name.equals("colorStroke")){
+                colorStroke = reader.nextString();
+            }else {
                 reader.skipValue();
             }
         }
         reader.endObject();
 
-        mCircleOptions.add(new CircleOptions().center(new LatLng(lat, lon)).radius(radio).strokeColor(Color.TRANSPARENT).strokeWidth(2).fillColor(Color.parseColor("#4058ACFA")));
-        return new Geofence.Builder().setRequestId((id)).setCircularRegion(lat, lon, Float.parseFloat(String.valueOf(radio))).setExpirationDuration(duration).setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT).build();
+        mCircleOptions.add(new CircleOptions().center(new LatLng(lat, lon)).radius(radio).strokeColor(Color.parseColor(colorStroke)/*.BLUE*/).strokeWidth(2).fillColor(Color.parseColor(/*"#4058ACFA"*/color)));//añade circulo al mapa
+        return new Geofence.Builder().setRequestId(String.valueOf((id))).setCircularRegion(lat, lon, Float.parseFloat(String.valueOf(radio))).setExpirationDuration(duration).setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT).build();
     }
 
     public GeofencingRequest getGeofencingRequest() {
@@ -491,6 +518,22 @@ public class FlipperViewDemoActivity extends AppCompatActivity implements Google
 
                     flipper.addView(videoView);
                     listOfVideos.add(noOfVideo);
+                }else if (imagesPath.listFiles()[count].getAbsolutePath().contains(".gif")) {
+                    Bitmap bmp = BitmapFactory.decodeFile(imagesPath.listFiles()[count].getAbsolutePath());
+                    imageView.setImageBitmap(bmp);
+
+                    Log.d(TAG, "Added File " + imagesPath.listFiles()[count].getName());
+                    listOfPublicity.add(idOfGeofence +" - " + imagesPath.listFiles()[count].getName());
+
+                    flipper.addView(imageView);
+                }else if (imagesPath.listFiles()[count].getAbsolutePath().contains(".png")) {
+                    Bitmap bmp = BitmapFactory.decodeFile(imagesPath.listFiles()[count].getAbsolutePath());
+                    imageView.setImageBitmap(bmp);
+
+                    Log.d(TAG, "Added File " + imagesPath.listFiles()[count].getName());
+                    listOfPublicity.add(idOfGeofence +" - " + imagesPath.listFiles()[count].getName());
+
+                    flipper.addView(imageView);
                 }
                 noOfVideo++;
             }
@@ -508,7 +551,7 @@ public class FlipperViewDemoActivity extends AppCompatActivity implements Google
             VideoView videoView = new VideoView(this);
 
             imageView.setLayoutParams(findViewById(R.id.llMain).getLayoutParams());
-            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
             videoView.setLayoutParams(findViewById(R.id.llMain).getLayoutParams());
 
             if (imagesPath.listFiles()[count].getAbsolutePath().contains(".jpg")) {
@@ -529,9 +572,18 @@ public class FlipperViewDemoActivity extends AppCompatActivity implements Google
 
                 flipper.addView(videoView);
                 listOfVideos.add(noOfVideo);
+            }else if (imagesPath.listFiles()[count].getAbsolutePath().contains(".gif")) {
+                Bitmap bmp = BitmapFactory.decodeFile(imagesPath.listFiles()[count].getAbsolutePath());
+                imageView.setImageBitmap(bmp);
+
+                Log.d(TAG, "Added File " + imagesPath.listFiles()[count].getName());
+                listOfPublicity.add("Publicity - " + imagesPath.listFiles()[count].getName());
+
+                flipper.addView(imageView);
             }
             noOfVideo++;
         }
+
         flipper.startFlipping();
         reproduceVideoWhileFlipping();
 

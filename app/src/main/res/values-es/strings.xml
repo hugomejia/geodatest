@@ -45,4 +45,7 @@
     <string name="restart_app_title">Reiniciar</string>
     <string name="restart_app_body">¿Deseas reiniciar la aplicación automaticamente?</string>
     <string name="action_more">Detalle</string>
+    <string name="action_camera">Mapa</string>
+    <string name="camera_status_off">Mapa: Desactivado</string>
+    <string name="camera_status_on">Mapa: Activado</string>
 </resources>

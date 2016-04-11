@@ -45,4 +45,7 @@
     <string name="restart_app_title">Redémarrage</string>
     <string name="restart_app_body">Vous souhaitez redémarrer automatiquement l application?</string>
     <string name="action_more">Détail</string>
+    <string name="action_camera">Carte</string>
+    <string name="camera_status_on">Carte: Activé</string>
+    <string name="camera_status_off">Carte: Désactivé</string>
 </resources>

@@ -62,8 +62,7 @@
             android:name=".FlipperViewDemoActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="landscape"
-            android:label="@string/app_name"
-            android:theme="@style/AppDemoTheme" />
+            android:label="@string/app_name" />
         <activity
             android:name=".SettingsActivity"
             android:configChanges="orientation|screenSize"

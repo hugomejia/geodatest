@@ -38,6 +38,7 @@ public class SplashScreenActivity extends AppCompatActivity {
     private final String TAG = "LifeCycleEventsSCA";
     //URL JSON que contiene los otros dos archivos planos
     private final String URLJson[] = {"https://www.dropbox.com/s/16ic97v04q08lcf/TypeOfApp.json?dl=1", Constants.APP_DATA_SDCARD, "TypeOfApp.json"};//wjfj6wheq0fhg70
+    //private final String URLJson[] = {"http://www.geoda-apps.com/json/TypeOfApp.json", Constants.APP_DATA_SDCARD, "TypeOfApp.json"};//wjfj6wheq0fhg70
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate");

@@ -143,7 +143,7 @@ public class FlipperViewActivity extends AppCompatActivity implements Connection
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_flipper_view_demo, menu);
+        getMenuInflater().inflate(R.menu.menu_flipper_view, menu);
         return true;
     }
 
@@ -155,17 +155,17 @@ public class FlipperViewActivity extends AppCompatActivity implements Connection
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+/*        if (id == R.id.action_settings) {
             Intent i = new Intent(this, SettingsActivity.class);
             startActivity(i);
-            overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
-        }
+            //overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
+        }*/
         //nuevo
-       /* if (id == R.id.action_more){
+        if (id == R.id.action_more){
             Intent j = new Intent(this, FlipperViewDemoActivity.class);
             startActivity(j);
             overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
-        }*/
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -389,11 +389,13 @@ public class FlipperViewActivity extends AppCompatActivity implements Connection
     }
 
     public Geofence geofencesBuilder(JsonReader reader) throws IOException {
-        String id = null;
+        int id = 0;
         double lat = 0;
         double lon = 0;
         double radio = 0;
         long duration = 0;
+        String color = null;
+        String colorStroke= null;
 
         reader.beginObject();
 
@@ -401,24 +403,28 @@ public class FlipperViewActivity extends AppCompatActivity implements Connection
             String name = reader.nextName();
             final boolean isNull = reader.peek() == JsonToken.NULL;
 
-            if (name.equals("id") && !isNull) {
-                id = reader.nextString();
+            if (name.equals("camp_id") && !isNull) {
+                id = reader.nextInt();
             } else if (name.equals("lat") && !isNull) {
                 lat = reader.nextDouble();
-            } else if (name.equals("long") && !isNull) {
+            } else if (name.equals("lng") && !isNull) {
                 lon = reader.nextDouble();
             } else if (name.equals("radio") && !isNull) {
                 radio = reader.nextDouble();
-            } else if (name.equals("duration")) {
+            } else if (name.equals("duration") && !isNull) {
                 duration = reader.nextLong();
-            } else {
+            }else if(name.equals("color") && !isNull){
+                color = reader.nextString();
+            }else if(name.equals("colorStroke")){
+                colorStroke = reader.nextString();
+            }else {
                 reader.skipValue();
             }
         }
         reader.endObject();
 
-        mCircleOptions.add(new CircleOptions().center(new LatLng(lat, lon)).radius(radio).strokeColor(Color.TRANSPARENT).strokeWidth(2).fillColor(Color.parseColor("#4058ACFA")));
-        return new Geofence.Builder().setRequestId((id)).setCircularRegion(lat, lon, Float.parseFloat(String.valueOf(radio))).setExpirationDuration(duration).setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT).build();
+        mCircleOptions.add(new CircleOptions().center(new LatLng(lat, lon)).radius(radio).strokeColor(Color.parseColor(colorStroke)/*.BLUE*/).strokeWidth(2).fillColor(Color.parseColor(/*"#4058ACFA"*/color)));//añade circulo al mapa
+        return new Geofence.Builder().setRequestId(String.valueOf((id))).setCircularRegion(lat, lon, Float.parseFloat(String.valueOf(radio))).setExpirationDuration(duration).setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT).build();
     }
 
     public GeofencingRequest getGeofencingRequest() {
@@ -481,6 +487,23 @@ public class FlipperViewActivity extends AppCompatActivity implements Connection
 
                     flipper.addView(videoView);
                     listOfVideos.add(noOfVideo);
+                }else if (imagesPath.listFiles()[count].getAbsolutePath().contains(".gif")) {
+                    Bitmap bmp = BitmapFactory.decodeFile(imagesPath.listFiles()[count].getAbsolutePath());
+                    imageView.setImageBitmap(bmp);
+
+                    //Log.d(TAG, "Added File " + imagesPath.listFiles()[count].getName());
+                    //listOfPublicity.add(idOfGeofence +" - " + imagesPath.listFiles()[count].getName());
+
+                    flipper.addView(imageView);
+                }
+                else if (imagesPath.listFiles()[count].getAbsolutePath().contains(".png")) {
+                    Bitmap bmp = BitmapFactory.decodeFile(imagesPath.listFiles()[count].getAbsolutePath());
+                    imageView.setImageBitmap(bmp);
+
+                    //Log.d(TAG, "Added File " + imagesPath.listFiles()[count].getName());
+                    //listOfPublicity.add(idOfGeofence +" - " + imagesPath.listFiles()[count].getName());
+
+                    flipper.addView(imageView);
                 }
                 noOfVideo++;
             }
@@ -498,7 +521,7 @@ public class FlipperViewActivity extends AppCompatActivity implements Connection
             VideoView videoView = new VideoView(this);
 
             imageView.setLayoutParams(findViewById(R.id.llMain).getLayoutParams());
-            imageView.setScaleType(ImageView.ScaleType.CENTER);
+            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
             videoView.setLayoutParams(findViewById(R.id.llMain).getLayoutParams());
 
             if (imagesPath.listFiles()[count].getAbsolutePath().contains(".jpg")) {
@@ -513,6 +536,14 @@ public class FlipperViewActivity extends AppCompatActivity implements Connection
 
                 flipper.addView(videoView);
                 listOfVideos.add(noOfVideo);
+            }else if (imagesPath.listFiles()[count].getAbsolutePath().contains(".gif")) {
+                Bitmap bmp = BitmapFactory.decodeFile(imagesPath.listFiles()[count].getAbsolutePath());
+                imageView.setImageBitmap(bmp);
+                flipper.addView(imageView);
+            }else if (imagesPath.listFiles()[count].getAbsolutePath().contains(".png")) {
+                Bitmap bmp = BitmapFactory.decodeFile(imagesPath.listFiles()[count].getAbsolutePath());
+                imageView.setImageBitmap(bmp);
+                flipper.addView(imageView);
             }
             noOfVideo++;
         }

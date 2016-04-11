@@ -44,4 +44,7 @@
     <string name="done">Done</string>
     <string name="restart_app_title">Restart</string>
     <string name="restart_app_body">You want to restart the application automatically?</string>
+    <string name="action_camera">Map</string>
+    <string name="camera_status_on">Map: Enabled</string>
+    <string name="camera_status_off">Map: Disabled</string>
 </resources>
